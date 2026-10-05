@@ -23,8 +23,6 @@ export default class TasksController {
       dueDateEnd: request.input('dueDateEnd'),
     }
 
-    console.log('FILTERS:', filters)
-
     const page = Math.max(Number(request.input('page', 1)), 1)
     const perPage = Math.min(Math.max(Number(request.input('perPage', 10)), 1), 100)
 

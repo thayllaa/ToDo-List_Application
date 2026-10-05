@@ -49,7 +49,6 @@ export class AuthService {
   }
 
   logout() {
-    console.log('logout');
     return this.http.post(`${API_URL}/logout`, {}).pipe(
       finalize(() => {
         this._token.set(null);
@@ -60,7 +59,6 @@ export class AuthService {
   }
 
   onLogout() {
-    console.log('onLogout');
     this.logout().subscribe({
       complete: () => this.router.navigate(['/auth']),
       error: () => this.router.navigate(['/auth']),

@@ -36,7 +36,6 @@ export default class CategoryService {
       icon: string
     }
   ) {
-    console.log('DATA RECEBIDA:', data)
     const category = await Category.query()
       .where('name', data.name)
       .where('userId', userId)
