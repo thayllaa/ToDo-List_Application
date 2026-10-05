@@ -43,8 +43,10 @@ import { CategoryIcon } from '../../../core/constants/categoryIcon';
           <p class="text-sm text-stone-400">Esta tarefa não tem descrição.</p>
         }
 
-        <app-subtasks-list [taskId]="task().id" />
-        <app-comment-list [taskId]="task().id" />
+        <div class="flex flex-col gap-6">
+          <app-subtasks-list [taskId]="task().id" />
+          <app-comment-list [taskId]="task().id" />
+        </div>
 
         <div class="flex justify-end gap-2 border-t border-stone-200 pt-4">
           <button type="button" class="btn-secondary" (click)="editTask.emit(task())">Editar tarefa</button>

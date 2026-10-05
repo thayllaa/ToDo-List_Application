@@ -1,6 +1,6 @@
 <header class="sticky top-0 z-40 border-b border-stone-200 bg-white">
     <div class="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
-        <a routerLink="/dashboard" class="text-lg font-semibold text-brand-700">ToDo Application</a>
+        <a routerLink="/dashboard" class="text-lg font-semibold text-brand-700">ToDo List Application</a>
 
         <nav class="hidden items-center gap-1 md:flex" aria-label="Principal">
             @for (l of links; track l.path) {
@@ -12,7 +12,7 @@
         </nav>
 
         <div class="hidden items-center gap-3 md:flex">
-            <span class="max-w-[12rem] truncate text-sm text-stone-600">
+            <span class="max-w-48 truncate text-sm text-stone-600">
                 {{ auth.user()?.username || auth.user()?.email }}
             </span>
             <button type="button"

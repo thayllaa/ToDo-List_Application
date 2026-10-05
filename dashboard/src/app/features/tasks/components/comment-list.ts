@@ -22,7 +22,9 @@ import { CommentService } from '../services/comment.service';
         <app-spinner />
       } @else {
         @if (items().length === 0) {
-          <p class="rounded-md border border-dashed border-stone-300 p-4 text-center text-sm text-stone-500">
+          <p
+            class="rounded-md border border-dashed border-stone-300 p-4 text-center text-sm text-stone-500"
+          >
             Nenhum comentário ainda. Registre decisões ou observações sobre esta tarefa.
           </p>
         } @else {
@@ -39,9 +41,15 @@ import { CommentService } from '../services/comment.service';
                       (keydown.escape)="cancelEdit()"
                     ></textarea>
                     <div class="flex justify-end gap-2">
-                      <button type="button" class="btn-secondary" (click)="cancelEdit()">Cancelar</button>
-                      <button type="button" class="btn-primary" [disabled]="editContent.invalid || savingEdit()"
-                        (click)="saveEdit(c)">
+                      <button type="button" class="btn-secondary" (click)="cancelEdit()">
+                        Cancelar
+                      </button>
+                      <button
+                        type="button"
+                        class="btn-primary"
+                        [disabled]="editContent.invalid || savingEdit()"
+                        (click)="saveEdit(c)"
+                      >
                         Salvar
                       </button>
                     </div>
@@ -50,18 +58,30 @@ import { CommentService } from '../services/comment.service';
                   <div class="flex items-start justify-between gap-3">
                     <p class="whitespace-pre-line text-sm text-stone-800">{{ c.content }}</p>
                     <div class="flex shrink-0 gap-1">
-                      <button type="button" class="btn-ghost px-2!" title="Editar"
-                        aria-label="Editar comentário" (click)="startEdit(c)">
+                      <button
+                        type="button"
+                        class="btn-ghost px-2!"
+                        title="Editar"
+                        aria-label="Editar comentário"
+                        (click)="startEdit(c)"
+                      >
                         <svg lucidePencil class="size-3.5"></svg>
                       </button>
-                      <button type="button" class="btn-ghost px-2! text-red-600" title="Excluir"
-                        aria-label="Excluir comentário" (click)="remove(c)">
+                      <button
+                        type="button"
+                        class="btn-ghost px-2! text-red-600"
+                        title="Excluir"
+                        aria-label="Excluir comentário"
+                        (click)="remove(c)"
+                      >
                         <svg lucideTrash2 class="size-3.5"></svg>
                       </button>
                     </div>
                   </div>
                   @if (c.createdAt) {
-                    <p class="mt-1 text-xs text-stone-500">{{ c.createdAt | date: 'dd/MM/yyyy HH:mm' }}</p>
+                    <p class="mt-1 text-xs text-stone-500">
+                      {{ c.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+                    </p>
                   }
                 }
               </li>
@@ -69,19 +89,14 @@ import { CommentService } from '../services/comment.service';
           </ul>
         }
 
-        <form class="space-y-2" (submit)="$event.preventDefault(); add()">
-          <textarea
-            rows="2"
-            class="form-input"
-            placeholder="Escreva um comentário (Ctrl+Enter envia)"
-            aria-label="Novo comentário"
-            [formControl]="content"
-            (keydown.control.enter)="add()"
-          ></textarea>
-          <div class="flex justify-end">
-            <button type="submit" class="btn-primary" [disabled]="adding() || content.invalid">Comentar</button>
-          </div>
-        </form>
+        <textarea
+          rows="2"
+          class="form-input field-sizing-content max-h-60 min-h-18 resize-none overflow-y-auto"
+          placeholder="Escreva um comentário (Ctrl+Enter envia)"
+          aria-label="Novo comentário"
+          [formControl]="content"
+          (keydown.control.enter)="add()"
+        ></textarea>
       }
     </section>
   `,
