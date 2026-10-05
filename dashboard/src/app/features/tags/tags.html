@@ -1,0 +1,58 @@
+<section class="space-y-6">
+  <h2 class="text-lg font-semibold text-stone-900">Tags</h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="card flex flex-col gap-3 p-4 sm:flex-row sm:items-end"
+    novalidate>
+    <div class="flex-1">
+      <label class="form-label" for="tag-name">{{ editing() ? 'Renomear tag' : 'Nova tag' }}</label>
+      <input id="tag-name" type="text" formControlName="name" class="form-input" placeholder="Ex.: urgente" />
+      @if (form.controls.name.touched && form.controls.name.invalid) {
+      <span class="form-error">Informe o nome da tag.</span>
+      }
+    </div>
+    <div>
+      <label class="form-label" for="tag-color">Cor</label>
+      <input id="tag-color" type="color" formControlName="color"
+        class="h-10 w-16 cursor-pointer rounded-md border border-stone-300 bg-white p-1" />
+    </div>
+    <div class="flex gap-2">
+      <button type="submit" class="btn-primary" [disabled]="saving()">
+        {{ editing() ? 'Salvar tag' : 'Adicionar tag' }}
+      </button>
+      @if (editing()) {
+      <button type="button" class="btn-secondary" (click)="cancelEdit()">Cancelar</button>
+      }
+    </div>
+  </form>
+
+  @if (loading()) {
+  <app-spinner />
+  } @else if (items().length === 0) {
+  <app-empty-state icon="🏷️" title="Nenhuma tag criada"
+    description="Tags ajudam a marcar tarefas que se repetem em categorias diferentes." />
+  } @else {
+  <ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    @for (t of items(); track t.id) {
+    <li class="card flex items-center justify-between gap-3 p-4">
+      <div class="flex min-w-0 items-center gap-3">
+        <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg"
+          [style.background-color]="t.color ? t.color + '26' : '#f5f5f4'">
+          <span class="h-4 w-4 rounded-full bg-stone-300" [style.background-color]="t.color"></span>
+        </span>
+        <span class="truncate text-sm font-semibold text-stone-800">{{ t.name }}</span>
+      </div>
+      <div class="flex shrink-0 gap-1">
+        <button type="button" class="btn-ghost px-2!" title="Editar" [attr.aria-label]="'Editar tag ' + t.name"
+          (click)="startEdit(t)">
+          <svg lucidePencil class="size-[18px]"></svg>
+        </button>
+        <button type="button" class="btn-ghost px-2! text-red-600" title="Excluir"
+          [attr.aria-label]="'Excluir tag ' + t.name" (click)="remove(t)">
+          <svg lucideTrash2 class="size-[18px]"></svg>
+        </button>
+      </div>
+    </li>
+    }
+  </ul>
+  }
+</section>

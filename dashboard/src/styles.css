@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-50: #eef7f6;
+  --color-brand-100: #d3ebe8;
+  --color-brand-200: #a8d7d2;
+  --color-brand-500: #1f8a85;
+  --color-brand-600: #17706c;
+  --color-brand-700: #125a57;
+}
+
+@layer base {
+  body {
+    @apply bg-stone-50 text-stone-800 antialiased;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-lg border border-stone-200 bg-white;
+  }
+  .form-label {
+    @apply mb-1 block text-sm font-medium text-stone-700;
+  }
+  .form-input {
+    @apply w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 placeholder:text-stone-400 focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-200;
+  }
+  .form-error {
+    @apply mt-1 block text-xs text-red-600;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-md bg-brand-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-brand-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-md border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-ghost {
+    @apply rounded-md px-2 py-1 text-sm text-stone-600 transition hover:bg-stone-100 focus-visible:outline-2 focus-visible:outline-brand-600;
+  }
+}

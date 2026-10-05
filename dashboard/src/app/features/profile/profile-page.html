@@ -1,0 +1,37 @@
+<section class="mx-auto max-w-lg space-y-6">
+    <h1 class="text-xl font-semibold text-stone-900">Perfil</h1>
+
+    @if (!auth.user()) {
+    <app-spinner />
+    } @else {
+    <form [formGroup]="form" (ngSubmit)="submit()" class="card space-y-4 p-5" novalidate>
+        <div>
+            <label class="form-label" for="p-name">Nome completo</label>
+            <input id="p-name" type="text" formControlName="username" class="form-input" />
+            @if (form.controls.username.touched && form.controls.username.invalid) {
+            <span class="form-error">Informe seu nome.</span>
+            }
+        </div>
+        <div>
+            <label class="form-label" for="p-email">E-mail</label>
+            <input id="p-email" type="email" formControlName="email" class="form-input" />
+            @if (form.controls.email.touched && form.controls.email.invalid) {
+            <span class="form-error">Informe um e-mail válido.</span>
+            }
+        </div>
+        <div>
+            <label class="form-label" for="p-password">Senha</label>
+            <input id="p-password" type="password" formControlName="password" class="form-input" />
+            @if (form.controls.password.touched && form.controls.password.invalid) {
+            <span class="form-error">Informe uma senha válida.</span>
+            }
+        </div>
+        <div class="flex justify-between gap-2">
+            <button type="button" class="btn-secondary" (click)="auth.logout()">Sair da conta</button>
+            <button type="submit" class="btn-primary" [disabled]="saving() || form.pristine">
+                {{ saving() ? 'Salvando...' : 'Salvar perfil' }}
+            </button>
+        </div>
+    </form>
+    }
+</section>

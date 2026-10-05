@@ -1,0 +1,48 @@
+<header class="sticky top-0 z-40 border-b border-stone-200 bg-white">
+    <div class="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
+        <a routerLink="/dashboard" class="text-lg font-semibold text-brand-700">ToDo Application</a>
+
+        <nav class="hidden items-center gap-1 md:flex" aria-label="Principal">
+            @for (l of links; track l.path) {
+            <a [routerLink]="l.path" routerLinkActive="bg-brand-50 text-brand-700"
+                class="rounded-md px-3 py-2 text-sm font-medium text-stone-600 hover:bg-stone-100">
+                {{ l.label }}
+            </a>
+            }
+        </nav>
+
+        <div class="hidden items-center gap-3 md:flex">
+            <span class="max-w-[12rem] truncate text-sm text-stone-600">
+                {{ auth.user()?.username || auth.user()?.email }}
+            </span>
+            <button type="button"
+                class="inline-flex items-center gap-2 rounded-md bg-brand-50 p-2 text-brand-700 transition-colors hover:bg-brand-100 hover:text-brand-800 active:bg-brand-200 active:text-brand-900"
+                (click)="auth.onLogout()">
+                <svg lucideLogOut class="size-4.5"></svg>
+            </button>
+        </div>
+
+        <button type="button" class="btn-ghost md:hidden" (click)="open.set(!open())" [attr.aria-expanded]="open()"
+            aria-label="Abrir menu">
+            ☰
+        </button>
+    </div>
+
+    @if (open()) {
+    <nav class="border-t border-stone-200 px-4 py-2 md:hidden" aria-label="Principal (mobile)">
+        @for (l of links; track l.path) {
+        <a [routerLink]="l.path" routerLinkActive="bg-brand-50 text-brand-700" (click)="open.set(false)"
+            class="block rounded-md px-3 py-3 text-sm font-medium text-stone-700">
+            {{ l.label }}
+        </a>
+        }
+        <button type="button" class="btn-secondary px-2!" title="Sair" aria-label="Sair" (click)="auth.logout()">
+            <svg lucideLogOut class="size-[18px]"></svg>
+        </button>
+    </nav>
+    }
+</header>
+
+<main class="mx-auto max-w-6xl p-4 sm:p-6">
+    <router-outlet />
+</main>
