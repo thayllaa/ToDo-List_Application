@@ -50,7 +50,7 @@ export class AuthPage {
     this.auth
       .login(this.loginForm.getRawValue())
       .pipe(finalize(() => this.submitting.set(false)))
-      .subscribe({              // erro caindo aqui
+      .subscribe({              
         next: () => {
           this.toast.success('Login realizado.');
           this.router.navigate(['/dashboard']);

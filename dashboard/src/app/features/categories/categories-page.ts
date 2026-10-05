@@ -91,7 +91,7 @@ export class CategoriesPage implements OnInit {
     this.saving.set(true);
 
     const request$ = current ? this.api.update(current.id, payload) : this.api.create(payload);
-    request$.pipe(finalize(() => this.saving.set(false))).subscribe({ // erro aqui
+    request$.pipe(finalize(() => this.saving.set(false))).subscribe({ 
       next: () => {
         this.toast.success(current ? 'Categoria atualizada.' : 'Categoria criada.');
         this.cancelEdit();
