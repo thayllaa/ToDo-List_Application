@@ -1,6 +1,7 @@
 /* eslint-disable @unicorn/filename-case */
 import { Component, OnInit, computed, inject, input, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { LucidePencil, LucideTrash2 } from '@lucide/angular';
 import { finalize } from 'rxjs';
 import { Subtask } from '../../../core/models';
 import { ConfirmService } from '../../../core/services/confirm.service';
@@ -11,7 +12,7 @@ import { SubtaskService } from '../services/subtask.service';
 
 @Component({
   selector: 'app-subtasks-list',
-  imports: [ReactiveFormsModule, Spinner],
+  imports: [ReactiveFormsModule, Spinner, LucidePencil, LucideTrash2],
   template: `
     <section class="space-y-3">
       <div class="flex items-center justify-between">
@@ -20,6 +21,12 @@ import { SubtaskService } from '../services/subtask.service';
           <span class="text-xs text-stone-500">{{ doneCount() }} de {{ items().length }} concluídas</span>
         }
       </div>
+
+      @if (items().length) {
+        <div class="h-1.5 overflow-hidden rounded-full bg-stone-100">
+          <div class="h-full rounded-full bg-brand-600 transition-all" [style.width.%]="progress()"></div>
+        </div>
+      }
 
       @if (loading()) {
         <app-spinner />
@@ -36,19 +43,42 @@ import { SubtaskService } from '../services/subtask.service';
                   type="checkbox"
                   class="h-4 w-4 accent-brand-600"
                   [checked]="s.isCompleted"
-                  (change)="toggle(s)"
+                  (change)="toggle(s, $event)"
                   [attr.aria-label]="'Concluir ' + s.title"
                 />
-                <span class="flex-1 text-sm" [class]="s.isCompleted ? 'text-stone-400 line-through' : 'text-stone-800'">
-                  {{ s.title }}
-                </span>
-                <button type="button" class="btn-ghost text-red-600" (click)="remove(s)">Excluir</button>
+
+                @if (editingId() === s.id) {
+                  <input
+                    type="text"
+                    class="form-input flex-1"
+                    aria-label="Editar subtarefa"
+                    [formControl]="editTitle"
+                    (keydown.enter)="saveEdit(s)"
+                    (keydown.escape)="cancelEdit()"
+                  />
+                  <button type="button" class="btn-primary shrink-0" [disabled]="editTitle.invalid" (click)="saveEdit(s)">
+                    Salvar
+                  </button>
+                  <button type="button" class="btn-secondary shrink-0" (click)="cancelEdit()">Cancelar</button>
+                } @else {
+                  <span class="flex-1 text-sm" [class]="s.isCompleted ? 'text-stone-400 line-through' : 'text-stone-800'">
+                    {{ s.title }}
+                  </span>
+                  <button type="button" class="btn-ghost px-2!" title="Editar"
+                    [attr.aria-label]="'Editar subtarefa ' + s.title" (click)="startEdit(s)">
+                    <svg lucidePencil class="size-4.5"></svg>
+                  </button>
+                  <button type="button" class="btn-ghost px-2! text-red-600" title="Excluir"
+                    [attr.aria-label]="'Excluir subtarefa ' + s.title" (click)="remove(s)">
+                    <svg lucideTrash2 class="size-4.5"></svg>
+                  </button>
+                }
               </li>
             }
           </ul>
         }
 
-        <form class="flex gap-2" (ngSubmit)="add()">
+        <form class="flex gap-2" (submit)="$event.preventDefault(); add()">
           <input
             type="text"
             class="form-input"
@@ -72,9 +102,18 @@ export class SubtasksList implements OnInit {
   items = signal<Subtask[]>([]);
   loading = signal(true);
   adding = signal(false);
+  editingId = signal<number | null>(null);
+
   doneCount = computed(() => this.items().filter((s) => s.isCompleted).length);
+  progress = computed(() =>
+    this.items().length ? Math.round((this.doneCount() / this.items().length) * 100) : 0,
+  );
 
   title = new FormControl('', {
+    nonNullable: true,
+    validators: [Validators.required, Validators.maxLength(255)],
+  });
+  editTitle = new FormControl('', {
     nonNullable: true,
     validators: [Validators.required, Validators.maxLength(255)],
   });
@@ -109,10 +148,40 @@ export class SubtasksList implements OnInit {
       });
   }
 
-  toggle(s: Subtask) {
+  toggle(s: Subtask, event: Event) {
+    const checkbox = event.target as HTMLInputElement;
     const isCompleted = !s.isCompleted;
     this.api.update(this.taskId(), s.id, { title: s.title, isCompleted }).subscribe({
       next: () => this.items.update((l) => l.map((x) => (x.id === s.id ? { ...x, isCompleted } : x))),
+      error: (e) => {
+        checkbox.checked = s.isCompleted; // volta o checkbox ao estado salvo
+        this.toast.error(errorMessage(e, 'Não foi possível atualizar a subtarefa.'));
+      },
+    });
+  }
+
+  startEdit(s: Subtask) {
+    this.editingId.set(s.id);
+    this.editTitle.setValue(s.title);
+  }
+
+  cancelEdit() {
+    this.editingId.set(null);
+  }
+
+  saveEdit(s: Subtask) {
+    const title = this.editTitle.value.trim();
+    if (!title || this.editTitle.invalid) return;
+    if (title === s.title) {
+      this.cancelEdit();
+      return;
+    }
+    this.api.update(this.taskId(), s.id, { title, isCompleted: s.isCompleted }).subscribe({
+      next: () => {
+        this.items.update((l) => l.map((x) => (x.id === s.id ? { ...x, title } : x)));
+        this.cancelEdit();
+        this.toast.success('Subtarefa atualizada.');
+      },
       error: (e) => this.toast.error(errorMessage(e, 'Não foi possível atualizar a subtarefa.')),
     });
   }

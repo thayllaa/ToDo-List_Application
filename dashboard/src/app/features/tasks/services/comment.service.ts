@@ -18,6 +18,10 @@ export class CommentService {
     return this.http.post<any>(this.url(taskId), payload).pipe(map((r) => unwrapOne<TaskComment>(r)));
   }
 
+  update(taskId: number, id: number, payload: Partial<TaskComment>) {
+    return this.http.put<any>(`${this.url(taskId)}/${id}`, payload);
+  }
+
   remove(taskId: number, id: number) {
     return this.http.delete(`${this.url(taskId)}/${id}`);
   }
