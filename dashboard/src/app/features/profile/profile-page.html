@@ -27,7 +27,7 @@
             }
         </div>
         <div class="flex justify-between gap-2">
-            <button type="button" class="btn-secondary" (click)="auth.logout()">Sair da conta</button>
+            <button type="button" class="btn-secondary" (click)="auth.onLogout()">Sair da conta</button>
             <button type="submit" class="btn-primary" [disabled]="saving() || form.pristine">
                 {{ saving() ? 'Salvando...' : 'Salvar perfil' }}
             </button>
